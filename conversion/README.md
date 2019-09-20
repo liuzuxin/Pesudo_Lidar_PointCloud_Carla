@@ -28,17 +28,14 @@ Edit the above commands to run specific version of Carla Server.
 ### Datacollection:
 2 Terminals are rquired to collect data.
 
-<dl>
-  <dt>1st terminal:</dt>
-</dl>
+* 1st terminal:
 ```python
 python spawn_npc.py -n 30
 ```
 This command will spawn '30' number of vehicles of random types over random position of specified map on CARLA server. In this case it is default "Town03".
 
-<dl>
-  <dt>2nd terminal:</dt>
-</dl>
+
+* 2nd terminal:
 ```python 
 python lidar_depth_bboxes.py
 ```
