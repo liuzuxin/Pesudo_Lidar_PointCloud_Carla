@@ -471,7 +471,7 @@ class CameraManager(object):
             carla.Transform(carla.Location(x=-1, z=2.8)),
             carla.Transform(carla.Location(x=-1, z=2.8),carla.Rotation(yaw=90)),
             carla.Transform(carla.Location(x=-1, z=2.8),carla.Rotation(yaw=180)),
-            carla.Transform(carla.Location(x=-1, z=2.8), carla.Rotation(yaw=270))]
+            carla.Transform(carla.Location(x=-1, z=2.8), carla.Rotation(yaw=271))]
         self._transform_index = 0
         self._sensors = [
             # ['sensor.camera.rgb', cc.Raw, 'Camera RGB'],
