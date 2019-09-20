@@ -29,19 +29,22 @@ Edit the above commands to run specific version of Carla Server.
 2 Terminals are rquired to collect data.
 
 <dl>
-<dt>1st terminal:</dt?
+  <dt>1st terminal:</dt>
+</dl>
 ```python
 python spawn_npc.py -n 30
 ```
-<dd>This command will spawn '30' number of vehicles of random types over random position of specified map on CARLA server. In this case it is default "Town03".</dd>
+This command will spawn '30' number of vehicles of random types over random position of specified map on CARLA server. In this case it is default "Town03".
 
-<dt>2nd terminal:</dt>
+<dl>
+  <dt>2nd terminal:</dt>
+</dl>
 ```python 
 python lidar_depth_bboxes.py
 ```
-<dd>This command will open a pygame window showing vizualization of the vehicle in 3rd person view with the bounding boxes rendered. And along with that, a part of the window surface will be vizualization of "logarithmic" depth in greyscale of the depth sensor.
-At the same time, the data of the moment will be saved. The lidar pointcloud ".bin" file, if activated, will be saved in the folder "datacollected_^" where the ^ is the timestamp of start of data collection. The bounding box labels will be stored as a npy file in KITTI format (8 points of (x,y,z) of bounding box corners) in the folder "datacollected_labels_^". The dept images will be saved in folder "datacollected_images_^". This folder has subdirectory "head", "tail", "left" and "right" indicating depth images from all the 4 depth cameras.</dd>
-</dl>
+This command will open a pygame window showing vizualization of the vehicle in 3rd person view with the bounding boxes rendered. And along with that, a part of the window surface will be vizualization of "logarithmic" depth in greyscale of the depth sensor.
+At the same time, the data of the moment will be saved. The lidar pointcloud ".bin" file, if activated, will be saved in the folder "datacollected_^" where the ^ is the timestamp of start of data collection. The bounding box labels will be stored as a npy file in KITTI format (8 points of (x,y,z) of bounding box corners) in the folder "datacollected_labels_^". The dept images will be saved in folder "datacollected_images_^". This folder has subdirectory "head", "tail", "left" and "right" indicating depth images from all the 4 depth cameras.
+
 
 ### Processing:
 To start processing the depth images to lidar pointcloud, transfered the required 4 camera images into the 4 folders in "convert_image" in the corresponding sequence of data collection frames named in whole numbers 0,1,2,... .
