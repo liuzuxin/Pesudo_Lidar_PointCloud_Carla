@@ -68,6 +68,7 @@ conversion
 │   ├── interpolate_2D.py
 ├── datacollected_*
 ├── datacollected_labels_*
+├── datacollected_images_*
 ├── lidar_depth_bboxes.py
 ├── spawn_npc.py
 ├── manual_control.py
