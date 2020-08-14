@@ -12,12 +12,9 @@ import glob
 import os
 import sys
 
+
 try:
-    # sys.path.append(glob.glob('**/carla-*%d.%d-%s.egg' % (
-        # sys.version_info.major,
-        # sys.version_info.minor,
-        # 'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
-    sys.path.append("PythonAPI/carla-0.9.4-py3.5-linux-x86_64.egg")
+    sys.path.append("PythonAPI/carla-0.9.6-py3.5-linux-x86_64.egg")
 except IndexError:
     pass
 
@@ -26,7 +23,8 @@ import carla
 import argparse
 import random
 import time
-
+import csv
+import numpy as np
 
 def main():
     argparser = argparse.ArgumentParser(
@@ -62,19 +60,28 @@ def main():
 
     actor_list = []
     client = carla.Client(args.host, args.port)
-    client.set_timeout(2.0)
+    client.set_timeout(5.0)
 
     try:
 
         world = client.get_world()
-        blueprints = world.get_blueprint_library().filter('vehicle.*')
+        blueprints = world.get_blueprint_library()
+        bp_vehicles = blueprints.filter('vehicle.*')
+        bp_pedestrians = blueprints.filter('walker.*')
 
         if args.safe:
             blueprints = [x for x in blueprints if int(x.get_attribute('number_of_wheels')) == 4]
             blueprints = [x for x in blueprints if not x.id.endswith('isetta')]
-
+            
+        
         def try_spawn_random_vehicle_at(transform):
-            blueprint = random.choice(blueprints)
+            blueprint = random.choice(bp_vehicles)
+
+            if(int(blueprint.get_attribute('number_of_wheels')) == 4):
+                blueprint = bp_vehicles.filter('vehicle.bmw.*')[0]
+            elif(int(blueprint.get_attribute('number_of_wheels')) == 2):
+                blueprint = bp_vehicles.filter('vehicle.harley-davidson.*')[0]
+        
             if blueprint.has_attribute('color'):
                 color = random.choice(blueprint.get_attribute('color').recommended_values)
                 blueprint.set_attribute('color', color)
@@ -83,23 +90,45 @@ def main():
             if vehicle is not None:
                 actor_list.append(vehicle)
                 vehicle.set_autopilot()
-                print('spawned %r at %s' % (vehicle.type_id, transform.location))
+#                vehicle.apply_control(carla.VehicleControl(throttle=0.05))
+#                print('spawned %r at %s' % (vehicle.type_id, transform.location))
                 return True
             return False
 
         # @todo Needs to be converted to list to be shuffled.
         spawn_points = list(world.get_map().get_spawn_points())
-        random.shuffle(spawn_points)
-
-        print('found %d spawn points.' % len(spawn_points))
+#        random.shuffle(spawn_points)
+#
+#        print('found %d spawn points.' % len(spawn_points))
 
         count = args.number_of_vehicles
-
+        other_cars = []
+        
+        spawn_array = np.genfromtxt('other_vehicle_spawn_points.csv', delimiter=',')
+        spawn_old=[]
+        for i in range(len(spawn_array)):
+            spawn_old.append(spawn_array[i])
+        spawn_old = np.asarray(spawn_old)
+            
+            
+        flag = 0
         for spawn_point in spawn_points:
+#            other_cars.append([spawn_point.location.x,spawn_point.location.y,spawn_point.location.z, 
+#                               spawn_point.rotation.pitch,spawn_point.rotation.yaw,spawn_point.rotation.roll])
+            spawn_point.location.x = spawn_old[flag][0]
+            spawn_point.location.y = spawn_old[flag][1]
+            spawn_point.location.z = spawn_old[flag][2]
+            spawn_point.rotation.pitch = spawn_old[flag][3]
+            spawn_point.rotation.yaw = spawn_old[flag][4]
+            spawn_point.rotation.roll = spawn_old[flag][5]
+            
             if try_spawn_random_vehicle_at(spawn_point):
+                flag = flag + 1 
                 count -= 1
             if count <= 0:
                 break
+            
+        other_cars = np.asarray(other_cars)
 
         while count > 0:
             time.sleep(args.delay)
@@ -112,7 +141,8 @@ def main():
             time.sleep(10)
 
     finally:
-
+#        np.savetxt("other_vehicle_spawn_points.csv", other_cars, delimiter=",")
+            
         print('\ndestroying %d actors' % len(actor_list))
         client.apply_batch([carla.command.DestroyActor(x.id) for x in actor_list])
 

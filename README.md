@@ -1,4 +1,4 @@
-# Pesudo_Lidar_PointCloud_Carla
+# pseudo-lidar
 Simulate precise LiDAR point cloud data from Carla
 
 
@@ -9,7 +9,7 @@ carla-0.9.6
 ├── PythonAPI
 │   ├── carla
 │   ├── examples
-│   ├── Pesudo_Lidar_PointCloud_Carla
+│   ├── pseudo-lidar
 │   │   ├── Reference
 │   │   ├── Implementation
 │   ├── util
@@ -17,3 +17,4 @@ carla-0.9.6
 ├── CarlaUE4
 ├── ... (Other files and folders)
 ```
+

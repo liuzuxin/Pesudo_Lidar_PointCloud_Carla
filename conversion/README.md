@@ -21,7 +21,7 @@ To install nvidia-docker-2 we recommend using the "Quick Start" section from the
 Commands:
 ```bash
 docker pull carlasim/carla:0.9.4
-docker run -p 2000-2002:2000-2002 --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 carlasim/carla:0.9.4 /bin/bash CarlaUE4.sh Town01
+docker run -p 2000-2002:2000-2002 --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=0 carlasim/carla:0.9.4
 ```
 Edit the above commands to run specific version of Carla Server.
 

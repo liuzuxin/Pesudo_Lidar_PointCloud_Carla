@@ -154,7 +154,7 @@ class World(object):
         self.recording_start = 0
         self.surface_gap_x = gap_x
         self.surface_diplace_y = displace_y
-        self.restart()
+        self.restart() 
         # self.world.on_tick(hud.on_world_tick)
 
 
@@ -201,12 +201,10 @@ class World(object):
         self._weather_index += -1 if reverse else 1
         self._weather_index %= len(self._weather_presets)
         preset = self._weather_presets[self._weather_index]
-        # self.hud.notification('Weather: %s' % preset[1])
         self.player.get_world().set_weather(preset[0])
 
     def tick(self, clock):
         self.world.tick()
-        # self.hud.tick(self, clock)
         pass
 
     def render(self, display):
@@ -228,84 +226,7 @@ class World(object):
         for actor in actors:
             if actor is not None:
                 actor.destroy()
-
-
-# ==============================================================================
-# -- KeyboardControl -----------------------------------------------------------
-# ==============================================================================
-
-# class KeyboardControl(object):
-#     def __init__(self, world, start_in_autopilot):
-#         self._autopilot_enabled = start_in_autopilot
-#         self._control = carla.VehicleControl()
-#         self._steer_cache = 0.0
-#         world.player.set_autopilot(self._autopilot_enabled)
-#         # world.hud.notification("Press 'H' or '?' for help.", seconds=4.0)
-
-#     def parse_events(self, world, clock):
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 return True
-#             elif event.type == pygame.KEYUP:
-#                 if self._is_quit_shortcut(event.key):
-#                     return True
-#                 elif event.key == K_BACKSPACE:
-#                     world.restart()
-#                 elif event.key == K_F1:
-#                     # world.hud.toggle_info()
-#                     pass
-#                 elif event.key == K_h or (event.key == K_SLASH and pygame.key.get_mods() & KMOD_SHIFT):
-#                     # world.hud.help.toggle()
-#                     pass
-#                 elif event.key == K_TAB:
-#                     world.camera_manager.toggle_camera()
-#                 elif event.key == K_c and pygame.key.get_mods() & KMOD_SHIFT:
-#                     world.next_weather(reverse=True)
-#                 elif event.key == K_c:
-#                     world.next_weather()
-#                 elif event.key == K_BACKQUOTE:
-#                     world.camera_manager.next_sensor()
-#                 elif event.key > K_0 and event.key <= K_9:
-#                     world.camera_manager.set_sensor(event.key - 1 - K_0)
-#                 elif event.key == K_r:
-#                     world.camera_manager.toggle_recording()
-#                 elif event.key == K_q:
-#                     self._control.gear = 1 if self._control.reverse else -1
-#                 elif event.key == K_m:
-#                     self._control.manual_gear_shift = not self._control.manual_gear_shift
-#                     self._control.gear = world.player.get_control().gear
-#                     # world.hud.notification(
-#                         # '%s Transmission' % ('Manual' if self._control.manual_gear_shift else 'Automatic'))
-#                 elif self._control.manual_gear_shift and event.key == K_COMMA:
-#                     self._control.gear = max(-1, self._control.gear - 1)
-#                 elif self._control.manual_gear_shift and event.key == K_PERIOD:
-#                     self._control.gear = self._control.gear + 1
-#                 elif event.key == K_p:
-#                     self._autopilot_enabled = not self._autopilot_enabled
-#                     world.player.set_autopilot(self._autopilot_enabled)
-#                     # world.hud.notification('Autopilot %s' % ('On' if self._autopilot_enabled else 'Off'))
-#         if not self._autopilot_enabled:
-#             self._parse_keys(pygame.key.get_pressed(), clock.get_time())
-#             self._control.reverse = self._control.gear < 0
-
-#     def _parse_keys(self, keys, milliseconds):
-#         self._control.throttle = 1.0 if keys[K_UP] or keys[K_w] else 0.0
-#         steer_increment = 5e-4 * milliseconds
-#         if keys[K_LEFT] or keys[K_a]:
-#             self._steer_cache -= steer_increment
-#         elif keys[K_RIGHT] or keys[K_d]:
-#             self._steer_cache += steer_increment
-#         else:
-#             self._steer_cache = 0.0
-#         self._steer_cache = min(0.7, max(-0.7, self._steer_cache))
-#         self._control.steer = round(self._steer_cache, 1)
-#         self._control.brake = 1.0 if keys[K_DOWN] or keys[K_s] else 0.0
-#         self._control.hand_brake = keys[K_SPACE]
-
-#     @staticmethod
-#     def _is_quit_shortcut(key):
-#         return (key == K_ESCAPE) or (key == K_q and pygame.key.get_mods() & KMOD_CTRL)
-
+                
 
 class KeyboardControl(object):
     def __init__(self, world, start_in_autopilot):
@@ -320,7 +241,6 @@ class KeyboardControl(object):
         else:
             raise NotImplementedError("Actor type not supported")
         self._steer_cache = 0.0
-        # world.hud.notification("Press 'H' or '?' for help.", seconds=4.0)
 
     def parse_events(self, client, world, clock):
         for event in pygame.event.get():
@@ -368,8 +288,6 @@ class KeyboardControl(object):
                     # disable autopilot
                     self._autopilot_enabled = False
                     world.player.set_autopilot(self._autopilot_enabled)
-                    # world.hud.notification("Replaying file 'manual_recording.rec'")
-                    # replayer
                     client.replay_file("manual_recording.rec", world.recording_start, 0, 0)
                     world.camera_manager.set_sensor(currentIndex)
                 elif event.key == K_MINUS and (pygame.key.get_mods() & KMOD_CTRL):
@@ -442,12 +360,6 @@ class KeyboardControl(object):
         return (key == K_ESCAPE) or (key == K_q and pygame.key.get_mods() & KMOD_CTRL)
 
 
-
-# ==============================================================================
-# -- CameraManager -------------------------------------------------------------
-# ==============================================================================
-
-
 class CameraManager(object):
     def __init__(self, parent_actor, width, height, gap_x, diplace_y):
         self.save_counter = 0
@@ -466,12 +378,10 @@ class CameraManager(object):
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)
         self._camera_transforms = [
-            # carla.Transform(carla.Location(x=-5.5, z=2.8), carla.Rotation(pitch=-15)),
-            # carla.Transform(carla.Location(x=1.6, z=1.7)),
-            carla.Transform(carla.Location(x=-1, z=2.8)),
-            carla.Transform(carla.Location(x=-1, z=2.8),carla.Rotation(yaw=90)),
-            carla.Transform(carla.Location(x=-1, z=2.8),carla.Rotation(yaw=180)),
-            carla.Transform(carla.Location(x=-1, z=2.8), carla.Rotation(yaw=271))]
+            carla.Transform(carla.Location(x=0, z=2.8)),
+            carla.Transform(carla.Location(x=0, z=2.8),carla.Rotation(yaw=90)),
+            carla.Transform(carla.Location(x=0, z=2.8),carla.Rotation(yaw=180)),
+            carla.Transform(carla.Location(x=0, z=2.8), carla.Rotation(yaw=270))]
         self._transform_index = 0
         self._sensors = [
             # ['sensor.camera.rgb', cc.Raw, 'Camera RGB'],
@@ -522,13 +432,6 @@ class CameraManager(object):
         print("making cameras")
         self._index = index
         if 1:
-            # if self.sensor is not None:
-            #     self.sensor.destroy()
-            #     self._surface = None
-            # self.sensor = self._parent.get_world().spawn_actor(
-            #     self._sensors[index][-1],
-            #     self._camera_transforms[self._transform_index],
-            #     attach_to=self._parent)
             self.sensor = self._parent.get_world().spawn_actor(
                 self._sensors[index][-1],
                 self._camera_transforms[self._transform_index],
@@ -583,7 +486,7 @@ class CameraManager(object):
             self.left_image.save_to_disk("datacollected_images_{0}/left/{1}".format(self.timedata, self.save_counter))
             self.tail_image.save_to_disk("datacollected_images_{0}/tail/{1}".format(self.timedata, self.save_counter))
             self.right_image.save_to_disk("datacollected_images_{0}/right/{1}".format(self.timedata, self.save_counter))
-            # np.save("{0}/{1}".format(self.save_dir, file_name),np.array(self.lidar_points))
+            np.save("{0}/{1}".format(self.save_dir, file_name),np.array(self.lidar_points))
         except Exception as e:
             print(e)
             print("No lidar points to save at counter: {}".format(self.save_counter))
@@ -663,8 +566,8 @@ class ClientSideBoundingBoxes(object):
         threedboxs = [ClientSideBoundingBoxes.get_bounding_box_xyz(vehicle, camera) for vehicle in vehicles]
         # self.bboxs3d = [ClientSideBoundingBoxes.get_bounding_box_xyz(vehicle, camera) for vehicle in vehicles]
         # print(np.asarray(threedboxs))
-        print(np.array(threedboxs).shape)
-        print(np.array(bounding_boxes).shape)
+        #print(np.array(threedboxs).shape)
+        #print(np.array(bounding_boxes).shape)
         # filter objects behind camera
         bounding_boxes = [bb for bb in bounding_boxes if all(bb[:, 2] > 0)]
         return [np.asarray(bounding_boxes),np.asarray(threedboxs)]
@@ -853,6 +756,7 @@ class BasicSynchronousClient(object):
         """
 
         settings = self.world.get_settings()
+        settings.fixed_delta_seconds = 1./30
         settings.synchronous_mode = synchronous_mode
         self.world.apply_settings(settings)
 
@@ -874,7 +778,7 @@ class BasicSynchronousClient(object):
         """
 
         # camera_transform = carla.Transform(carla.Location(x=-5.5, z=2.8), carla.Rotation(pitch=-15))
-        camera_transform = carla.Transform(carla.Location(x=-5.5, z=2.8), carla.Rotation(pitch=-15))
+        camera_transform = carla.Transform(carla.Location(z=2.8))
         self.camera = self.world.spawn_actor(self.camera_blueprint(), camera_transform, attach_to=self.car)
         weak_self = weakref.ref(self)
         self.camera.listen(lambda image: weak_self().set_image(weak_self, image))
@@ -891,7 +795,21 @@ class BasicSynchronousClient(object):
         Will return True If ESCAPE is hit, otherwise False to end main loop.
         """
 
-        keys = pygame.key.get_pressed()
+        keys = pygame.key.get_pressed()        # print(self._sensors[self._index][1])
+        image.convert(self._sensors[self._index][1])
+        if name == "head":
+            array = np.frombuffer(image.raw_data, dtype=np.dtype("uint8"))
+            array = np.reshape(array, (image.height, image.width, 4))
+            array = array[:, :, :3]
+            array = array[:, :, ::-1]
+            self._surface = pygame.surfarray.make_surface(array.swapaxes(0, 1))
+            self.head_image = image
+        if name == "tail":
+            self.tail_image = image
+        if name == "left":
+            self.left_image = image
+        if name == "right":
+            self.right_image = image
         if keys[K_ESCAPE]:
             return True
 
@@ -995,7 +913,7 @@ class BasicSynchronousClient(object):
             self.display = pygame.display.set_mode((VIEW_WIDTH, VIEW_HEIGHT*2), pygame.HWSURFACE | pygame.DOUBLEBUF)
 
             self.world = self.client.get_world()
-            print("The map is: {}".format(self.world.get_map().get_spawn_points()))
+            # print("The map is: {}".format(self.world.get_map().get_spawn_points()))
             self.width = VIEW_WIDTH
             self.height = VIEW_HEIGHT
             
@@ -1007,18 +925,10 @@ class BasicSynchronousClient(object):
             pygame_clock = pygame.time.Clock()
 
             self.set_synchronous_mode(True)
-            vehicles = self.world.get_actors().filter('vehicle.*')
+            self.vehicles = self.world.get_actors().filter('vehicle.*')
 
             controller = KeyboardControl(self.world_instance, False)
 
-            # if self.agent == "Roaming":
-            #     agent = RoamingAgent(self.world_instance.player)
-            # else:
-            #     agent = BasicAgent(self.world_instance.player)
-            #     spawn_point = self.world.get_map().get_spawn_points()[0]
-            #     agent.set_destination((spawn_point.location.x,
-            #                            spawn_point.location.y,
-            #                            spawn_point.location.z))
             skip_frame_till = 5
             current_skip_num = 0
 
@@ -1035,7 +945,7 @@ class BasicSynchronousClient(object):
                 pygame_clock.tick_busy_loop(20)
 
                 self.render(self.display)
-                self.bounding_boxes, self.threedboxes = ClientSideBoundingBoxes.get_bounding_boxes(vehicles, self.camera)             
+                self.bounding_boxes, self.threedboxes = ClientSideBoundingBoxes.get_bounding_boxes(self.vehicles, self.camera)             
 
                 if current_skip_num >= skip_frame_till:
                     self.save_lidar_and_bboxes()
@@ -1058,14 +968,14 @@ class BasicSynchronousClient(object):
             self.camera.destroy()
             self.car.destroy()
             print("renaming files ...")
-            # BIN_PATH = self.world_instance.camera_manager.save_dir
-            # filelist = glob.glob(BIN_PATH + "/*")
-            # for each in tqdm.tqdm(filelist):
-            #     src = each
-            #     full_str = each[-10:-4]
-            #     dst = BIN_PATH + "/" + full_str + ".bin"
-            #     print(src, dst)
-            #     os.rename(src, dst) 
+#            BIN_PATH = self.world_instance.camera_manager.save_dir
+#            filelist = glob.glob(BIN_PATH + "/*")
+#            for each in tqdm.tqdm(filelist):
+#                src = each
+#                full_str = each[-10:-4]
+#                dst = BIN_PATH + "/" + full_str + ".bin"
+#                print(src, dst)
+#                os.rename(src, dst) 
             print("Done")
             pygame.quit()
 

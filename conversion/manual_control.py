@@ -54,12 +54,13 @@ import os
 import sys
 
 try:
-    sys.path.append(glob.glob('**/carla-*%d.%d-%s.egg' % (
-        sys.version_info.major,
-        sys.version_info.minor,
-        'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
+#    sys.path.append(glob.glob('PythonAPI/carla-0.9.4-py2.7-linux-x86_64.egg' % (
+#        sys.version_info.major,
+#        sys.version_info.minor,
+#        'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
+    sys.path.append('~/pseudo-lidar/conversion/PythonAPI/carla-0.9.4-py3.6-linux-x86_64.egg')
 except IndexError:
-    pass
+    print("none")
 
 
 # ==============================================================================
